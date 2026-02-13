@@ -1,8 +1,19 @@
 # Anemia Detection using CNN
 
-This project implements a 1D Convolutional Neural Network (CNN) to detect Anemia using pixel features extracted from images.
+# Anemia Detection using Deep Learning (CNN) & Machine Learning
 
-## Project Structure
+## 📌 Project Overview
+An end-to-end AI system designed to detect **Anemia** based on pixel characteristics (% Red, Green, Blue) extracted from nail/conjunctiva images. This project implements and compares two different approaches:
+1.  **Deep Learning**: A 1D Convolutional Neural Network (CNN) built with **TensorFlow/Keras**.
+2.  **Machine Learning**: A Random Forest Classifier built with **Scikit-Learn**.
+
+The system is fully deployed as a **local web application** using **Flask**, featuring a modern, user-friendly interface for real-time predictions.
+
+## 🚀 Key Features
+-   **Dual Model Architecture**: Compare CNN vs. Random Forest performance.
+-   **Interactive Web App**: Modern UI built with HTML/CSS/JS and Flask backend.
+-   **Data Processing**: Automated feature scaling and encoding pipeline.
+-   **Deployment Ready**: includes scripts for training, testing, and launching the app.
 
 - `src/`
   - `data_loader.py`: Handles loading and preprocessing of `Anemia_Dataset.csv`.
