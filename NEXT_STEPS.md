@@ -13,6 +13,7 @@ You have successfully:
 4.  Enter patient details and click "Analyze".
 
 ## Files Overview
+
 -   `app.py`: The Flask backend logic.
 -   `templates/index.html`: The modern frontend interface.
 -   `anemia_model.h5`: The trained CNN model being used.
@@ -21,3 +22,10 @@ You have successfully:
 ## Future Improvements
 -   **Host Online**: To share this with others, you would deploy `app.py` to a cloud provider like Heroku, AWS, or Render.
 -   **Database**: Add a database (SQLite/PostgreSQL) to `app.py` to save patient records.
+
+## 4. Push to Hugging Face
+I have installed the Hugging Face CLI and created a helper script for you.
+
+1.  **Double-click `push_huggingface.bat`**.
+2.  It will ask you to **Login**. Go to [hf.co/settings/tokens](https://huggingface.co/settings/tokens), create a token with "Write" access, and paste it into the terminal.
+3.  Once logged in, it will automatically upload your project to `Shishir0315/Anemia-Detection`.

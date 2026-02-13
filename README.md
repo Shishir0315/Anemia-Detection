@@ -1,4 +1,11 @@
-# Anemia Detection using CNN
+---
+title: Anemia Detection
+emoji: 🩸
+colorFrom: red
+colorTo: pink
+sdk: docker
+pinned: false
+---
 
 # Anemia Detection using Deep Learning (CNN) & Machine Learning
 
