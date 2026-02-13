@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anemia Detection AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #8B5CF6;
+            --accent: #EC4899;
+            --text-main: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
+            overflow: hidden;
+        }
+
+        /* Ambient Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+        }
+        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--primary); }
+        .orb-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--accent); }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #A78BFA, #F472B6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(236, 72, 153, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Result Modal */
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .result-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-conf {
+            font-size: 0.9rem;
+            color: var(--primary);
+            background: rgba(139, 92, 246, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            display: inline-block;
+        }
+
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Anemia AI</h1>
+            <p class="subtitle">1D CNN Powered Detection System</p>
+
+            <form id="predictForm">
+                <div class="form-group">
+                    <label for="sex">Sex</label>
+                    <select id="sex" required>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+
+                <!-- 
+                     The inputs are standard range text inputs. 
+                     Could use type="number" step="0.01".
+                -->
+                <div class="form-group">
+                    <label>Pixel Percentages</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                        <input type="number" step="0.01" id="red" placeholder="% Red" required>
+                        <input type="number" step="0.01" id="green" placeholder="% Green" required>
+                        <input type="number" step="0.01" id="blue" placeholder="% Blue" required>
+                    </div>
+                </div>
+
+                <button type="submit">
+                    <span id="btnText">Analyze</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </form>
+
+            <div class="result-container" id="resultBox">
+                <div class="result-title">Review Result</div>
+                <div class="result-value" id="resultLabel">--</div>
+                <div class="result-conf" id="resultConf">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // UI State
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('resultBox');
+            
+            btnText.style.display = 'none';
+            loader.style.display = 'block';
+            resultBox.style.display = 'none';
+            resultBox.style.opacity = '0';
+
+            // Data
+            const data = {
+                sex: document.getElementById('sex').value,
+                red: document.getElementById('red').value,
+                green: document.getElementById('green').value,
+                blue: document.getElementById('blue').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('resultLabel').innerText = result.label;
+                    document.getElementById('resultConf').innerText = result.confidence + " Confidence";
+                    
+                    // Logic for color
+                    const labelEl = document.getElementById('resultLabel');
+                    if (result.label === 'Anemic' || result.label === 'Anaemic') {
+                        labelEl.style.color = '#F87171'; // Red-ish
+                    } else {
+                        labelEl.style.color = '#34D399'; // Green-ish
+                    }
+
+                    resultBox.style.display = 'block';
+                    // Trigger reflow
+                    void resultBox.offsetWidth; 
+                    resultBox.style.opacity = '1';
+                } else {
+                    alert('Error: ' + result.error);
+                }
+
+            } catch (err) {
+                alert('Connection Error');
+            } finally {
+                btnText.style.display = 'block';
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
